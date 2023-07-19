@@ -5,7 +5,7 @@ assistant_list = []
 
 
 class Employee:
-    def __init__(self, name, status, hours, excluded_days, excluded_people, place, holiday, saturday=False):
+    def __init__(self, name, status, hours, excluded_days, excluded_people, place, holiday):
         self.name = name
         self.status = status
         self.hours = hours
@@ -13,11 +13,10 @@ class Employee:
         self.excluded_people = excluded_people
         self.place = place
         self.holiday = holiday
-        self.saturday = saturday
         if self.status == "doctor":
-            doctor_list.append(self.name)
+            doctor_list.append(self)
         elif self.status == "assistant":
-            assistant_list.append(self.name)
+            assistant_list.append(self)
 
     def change_name(self):
         self.name = input(f"Podaj nowe imię dla {self.name}: ")
@@ -78,14 +77,6 @@ class Employee:
             self.place = "Redia"
             print(f"Od teraz {self.name} pracuje w Redzie.")
 
-    def change_saturday_status(self):
-        if self.saturday == False:
-            self.saturday = True
-            print(f"{self.name} może pracować w soboty.")
-        elif self.saturday == True:
-            self.saturday = False
-            print(f"{self.name} nie może pracować w soboty.")
-
     def holiday_add(self):
         try:
             start_date = int(input("Podaj pierwszy dzień urlopu: "))
@@ -105,8 +96,9 @@ Hania = Employee("Hanna H.", "assistant", 80, ["pon", "wt"], [Gwiazda.name], "Re
 Ass2 = Employee("Asystentka2", "assistant", 80, ["pt"], [Lekarz2.name], "Reda", False)
 Ass3 = Employee("Asystentka3", "assistant", 160, [], [], "Rumia", False)
 
-# print(doctor_list, assistant_list)
 #
 # Gwiazda.holiday_add()
 #
 # print(Gwiazda.holiday)
+
+# print(doctor_list)

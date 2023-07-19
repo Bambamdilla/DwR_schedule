@@ -1,31 +1,31 @@
 import random
 import calendar
 import datetime
-from calendarium import create_calendar
+
+import employees
+from calendarium import Given_month
 from employees import doctor_list, assistant_list
-from checks import can_work_together, can_work_this_day
+from checks import can_work_together, can_work_this_day, check_hours_limit
 
 def draw_employees():
-    days_list = create_calendar()
-    print(days_list)
+    days_list = Given_month.create_calendar_with_weekday_names()
     graph = {}
-    for day in days_list:
+    for day in days_list.keys():
         doctor_number = random.randrange(len(doctor_list))
         assistant_number = random.randrange(len(assistant_list))
         doctor = doctor_list[doctor_number]
         assistant = assistant_list[assistant_number]
-        if can_work_this_day(day, doctor) and can_work_this_day(day, assistant):
-            if can_work_together(doctor, assistant):
-                graph[day] = {doctor_list[doctor_number] + assistant_list[assistant_number]}
-
+        # To do: repeat the loop if day is not covered
+        if doctor.hours > 7 and assistant.hours > 7:
+            if can_work_this_day(days_list.get(day), doctor) and can_work_this_day(days_list.get(day), assistant):
+                if can_work_together(doctor, assistant):
+                    graph[day] = {f"{doctor.name} + {assistant.name}"}
+                    doctor.hours -= 8
+                    assistant.hours -= 8
     print(graph)
 
 
 draw_employees()
 
-# date = str(input('Enter the date(for example:09 02 2019):'))
-# day_name = ['pon', 'wt', 'sr', 'czw', 'pt', 'Saturday', 'Sunday']
-# day = datetime.datetime.strptime(date, '%d %m %Y').weekday()
-# print(day_name[day])
 
 

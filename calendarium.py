@@ -1,24 +1,38 @@
 import calendar
-from consts import OFF_DAYS, HOLIDAYS
+import datetime
+from consts import OFF_DAYS, WORKING_DAYS, HOLIDAYS
 
 
-def create_calendar():
-    year = int(input("Podaj rok: "))
-    month = int(input("Podaj miesiąc: "))
+class CalendarWizard:
+    def __init__(self, month, year):
+        self.days_list = None
+        self.month = month
+        self.year = year
 
-    obj = calendar.Calendar()
+    def create_calendar(self):
+        obj = calendar.Calendar()
+        # creating calendar as list starting from Monday
+        self.days_list = [day for day in obj.itermonthdays(self.year, self.month)]
+        # removing weekends and holidays from calendar
+        for i in sorted(OFF_DAYS, reverse=True):
+            del self.days_list[i]
+        for i in HOLIDAYS.get(self.month):
+            if i in self.days_list:
+                self.days_list.remove(i)
+        # Weekdays before 1st day of month are stored as 0, so we need to get rid of them
+        self.days_list = list(filter(lambda x: x != 0, self.days_list))
+        return self.days_list
 
-    # creating calendar as list starting from Monday
-    days_list = [day for day in obj.itermonthdays(year, month)]
+    def create_calendar_with_weekday_names(self):
+        self.days_list = self.create_calendar()
+        days_list_with_weekday_names = {}
+        day_name = WORKING_DAYS
+        for day in self.days_list:
+            date = f"{day} {self.month} {self.year}"
+            weekday = datetime.datetime.strptime(date, '%d %m %Y').weekday()
+            days_list_with_weekday_names[day] = day_name[weekday]
 
-    # removing weekends and holidays from calendar
-    for i in sorted(OFF_DAYS, reverse=True):
-        del days_list[i]
-    for i in HOLIDAYS.get(month):
-        if i in days_list:
-            days_list.remove(i)
-    days_list = list(filter(lambda x: x != 0, days_list))
-    return days_list
+        return days_list_with_weekday_names
 
 
-print(create_calendar)
+Given_month = CalendarWizard(8, 2023)
